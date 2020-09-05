@@ -21,6 +21,8 @@ dependencies {
   //vertx web
   //https://vertx.io/docs/vertx-web/java/
   compile 'io.vertx:vertx-web:3.9.2'
+  //mongo
+  compile 'io.vertx:vertx-mongo-client:3.9.2'
 }
 
 compileKotlin {
