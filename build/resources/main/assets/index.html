@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Whisky Collection</title>
+    <title>My Person Collection</title>
 
     <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
@@ -11,24 +11,23 @@
 <body>
 <div class="container" role="main">
     <div class="jumbotron">
-        <h1>My Whisky Collection</h1>
+        <h1>My Person Collection</h1>
 
         <p>Just an example of simple CRUD application developed using Vert.x and Vertx Web.</p>
     </div>
     <div class="page-header">
         <div class="row">
             <div class="col-md-12">
-                <h1>My Whiskies</h1>
+                <h1>My Person</h1>
                 <button class="pull-right btn btn-primary product-add" data-action="add" data-toggle="modal"
                         data-target="#productModal">
-                    <span class="glyphicon glyphicon-plus"></span> Add a new bottle
+                    <span class="glyphicon glyphicon-plus"></span> Add a new person
                 </button>
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th>#</th>
+                        <th>ID</th>
                         <th>Name</th>
-                        <th>Origin</th>
                         <th>Actions</th>
                     </tr>
                     </thead>
@@ -46,8 +45,8 @@
         initModal();
     });
 
-    function create(name, origin) {
-        $.post("/api/whiskies", JSON.stringify({name: name, origin: origin}), function () {
+    function create(name) {
+        $.post("/users", JSON.stringify({name: name}), function (data) {
             load();
         }, "json");
     }
@@ -55,8 +54,8 @@
     function remove(id) {
         $.ajax({
             method: "DELETE",
-            url: "/api/whiskies/" + id
-        }).done(function () {
+            url: "/users?id=" + id
+        }).done(function (data) {
             load();
         });
     }
@@ -64,29 +63,28 @@
     function update(id, name, origin) {
         $.ajax({
             method: "PUT",
-            url: "/api/whiskies/" + id,
-            data: JSON.stringify({name: name, origin: origin})
-        }).done(function () {
+            url: "/users?=" + id,
+            data: JSON.stringify({name: name})
+        }).done(function (data) {
             load();
         });
     }
 
     function load() {
         $("#content").children().remove();
-        $.getJSON("/api/whiskies", function (data) {
-            $.each(data, function (key, val) {
-                $("<tr><td>" + val.id + "</td><td>" + val.name + "</td><td>" + val.origin + "</td>" +
+        $.getJSON("/users", function (data) {
+            $.each(data.users, function (key, val) {
+                $("<tr><td>" + val._id + "</td><td>" + val.name + "</td>" +
                         "<td>" +
                         "<button data-action='edit' class='btn btn-primary btn-sm product-edit' " +
                         "data-toggle='modal' " +
                         "data-target='#productModal' " +
                         "data-name='" + val.name + "' " +
-                        "data-origin='" + val.origin + "' " +
-                        "data-id='" + val.id + "'>" +
+                        "data-id='" + val._id + "'>" +
                         "<span class='glyphicon glyphicon-pencil'></span>" +
                         "</button>" +
                         "&nbsp;" +
-                        "<button class='btn btn-danger btn-sm product-delete' data-id='" + val.id + "'>" +
+                        "<button class='btn btn-danger btn-sm product-delete' data-id='" + val._id + "'>" +
                         "   <span class='glyphicon glyphicon-minus'></span>" +
                         "</button>" +
                         "</td>" +
@@ -112,19 +110,17 @@
             productAction.unbind();
             var modal = $(this);
             if (action === "add") {
-                modal.find('.modal-title').text("Add a bottle");
+                modal.find('.modal-title').text("Add a person");
                 modal.find('#product-name').val("");
-                modal.find('#product-origin').val("");
                 productAction.click(function () {
-                    create($("#product-name").val(), $("#product-origin").val());
+                    create($("#product-name").val());
                     $('#productModal').modal('toggle');
                 });
             } else {
                 modal.find('.modal-title').text("Edit a bottle");
                 modal.find('#product-name').val(button.data("name"));
-                modal.find('#product-origin').val(button.data("origin"));
                 productAction.click(function () {
-                    update(id, $("#product-name").val(), $("#product-origin").val());
+                    update(id, $("#product-name").val());
                     $('#productModal').modal('toggle');
                 });
             }
@@ -136,17 +132,13 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span>&times;</span></button>
-                <h4 class="modal-title" id="productModalTitle">Add a bottle</h4>
+                <h4 class="modal-title" id="productModalTitle">Add a person</h4>
             </div>
             <div class="modal-body">
                 <form>
                     <div class="form-group">
                         <label for="product-name" class="control-label">Name:</label>
                         <input type="text" class="form-control" id="product-name">
-                    </div>
-                    <div class="form-group">
-                        <label for="product-origin" class="control-label">Origin:</label>
-                        <input type="text" class="form-control" id="product-origin">
                     </div>
                 </form>
             </div>
