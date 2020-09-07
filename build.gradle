@@ -32,6 +32,7 @@ dependencies {
     compile group: 'com.github.joelittlejohn.embedmongo', name: 'embedmongo-maven-plugin', version: '0.3.4'*/
     //jdbc
     compile 'io.vertx:vertx-jdbc-client:3.9.2'
+    compile 'dev.morphia.morphia:core:1.6.0'
 }
 
 compileKotlin {
